@@ -14,19 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: read-yaml-file
-        uses: pietrobolcato/action-read-yaml@1.0.0
-        id: read_values_yaml
-        with:
-          config: ./charts/values.yaml
+                    
+      - name: yq - portable yaml processor
+        uses: mikefarah/yq@v4.43.1
+      - name: Set image name
+        run: echo "IMAGE_NAME=$(yq '.shiny.image.repository' values.yaml)" >> $GITHUB_ENV
       - name: Image name
         run: |
-          echo ${{ steps.read_values_yaml.outputs['shiny.image.repository'] }}
+          echo  ${{ env.IMAGE_NAME }}
       - name: Docker meta
         id: docker_meta
         uses: docker/metadata-action@v3
         with:
-          images: nand42/test-onyxia
+          images: ${{ env.IMAGE_NAME }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -42,10 +42,8 @@ jobs:
         with:
           context: ./app/
           file: ./app/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ${{ steps.docker_meta.outputs.tags }}
-            ${{ github.ref == 'refs/heads/main' && 'nand42/test-onyxia:latest' || '' }}
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:latest
           labels: ${{ steps.docker_meta.outputs.labels }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
