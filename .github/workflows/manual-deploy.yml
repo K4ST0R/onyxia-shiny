@@ -84,7 +84,7 @@ jobs:
           --server=https://apiserver.kub.sspcloud.fr \
           --insecure-skip-tls-verify=true
 
-          kubectl config set-credentials${{ github.event.inputs.username }} \
+          kubectl config set-credentials ${{ github.event.inputs.username }} \
             --auth-provider=oidc  \
             --auth-provider-arg=idp-issuer-url=https://auth.lab.sspcloud.fr/auth/realms/sspcloud  \
             --auth-provider-arg=client-id=onyxia  \
