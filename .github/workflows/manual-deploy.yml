@@ -18,7 +18,7 @@ jobs:
       - name: yq - portable yaml processor
         uses: mikefarah/yq@v4.43.1
       - name: Set image name
-        run: echo "IMAGE_NAME=$(yq '.shiny.image.repository' values.yaml)" >> $GITHUB_ENV
+        run: echo "IMAGE_NAME=$(yq '.shiny.image.repository' ./charts/values.yaml)" >> $GITHUB_ENV
       - name: Image name
         run: |
           echo  ${{ env.IMAGE_NAME }}
