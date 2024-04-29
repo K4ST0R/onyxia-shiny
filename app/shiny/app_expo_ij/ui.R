@@ -5,7 +5,7 @@ navbarPage_dsfr(
   id = "nav",
   header = header_dsfr(
     intitule = c("République","Française"),
-    nom_site_service = "Exposition des données InserJeunes - Couvertures des catalogues - test",
+    nom_site_service = "Exposition des données InserJeunes - Couvertures des catalogues",
     baseline = "https://documentation.exposition.inserjeunes.beta.gouv.fr/"
   ),
   # First tab
