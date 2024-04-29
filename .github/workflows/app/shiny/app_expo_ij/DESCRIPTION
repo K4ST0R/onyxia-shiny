@@ -1,0 +1,14 @@
+Package: app_expo_ij
+Type: Package
+Title: Une app pour expo
+Version: 0.1.1
+Author: arnaudmilet
+Description: Une app pour expo
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports:
+    shiny,
+    shinygouv
+Remotes:
+    spyrales/shinygouv
