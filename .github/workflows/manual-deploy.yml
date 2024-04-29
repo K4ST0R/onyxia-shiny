@@ -41,6 +41,7 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
   deploy:
+    needs: docker
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment_name }}
 
@@ -78,5 +79,5 @@ jobs:
       - name: "Deploy helm charts"
         run : |
           helm dependency update ./charts
-          helm remove ananda
           helm install ananda ./charts
+          helm upgrade ananda ./charts  --recreate-pods
