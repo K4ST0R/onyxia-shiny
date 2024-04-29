@@ -79,5 +79,4 @@ jobs:
       - name: "Deploy helm charts"
         run : |
           helm dependency update ./charts
-          helm install ananda ./charts
-          helm upgrade ananda ./charts  --recreate-pods
+          helm upgrade ananda ./charts  --recreate-pods --install 
