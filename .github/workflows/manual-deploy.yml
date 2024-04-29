@@ -3,16 +3,25 @@ name: Deploy shiny app
 on:
   workflow_dispatch:
     inputs:
-      target_scale_set:
-        description: "Which scale set to deploy?"
+      name:
+        description: "Nom du chart à déployer?"
         type: string
         required: true
+        default: test
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: read-yaml-file
+        uses: pietrobolcato/action-read-yaml@1.0.0
+        id: read_values_yaml
+        with:
+          config: ./charts/values.yaml
+      - name: Image name
+        run: |
+          echo ${{ steps.read_values_yaml.outputs['shiny.image.repository'] }}
       - name: Docker meta
         id: docker_meta
         uses: docker/metadata-action@v3
@@ -79,4 +88,4 @@ jobs:
       - name: "Deploy helm charts"
         run : |
           helm dependency update ./charts
-          helm upgrade ananda ./charts  --recreate-pods --install 
+          helm upgrade ${{ github.event.inputs.name }} ./charts  --recreate-pods --install 
