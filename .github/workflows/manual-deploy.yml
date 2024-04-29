@@ -8,13 +8,29 @@ on:
         type: string
         required: true
         default: test
+      refreshToken:
+        description: Refresh token"
+        type: string
+        required: true
+      idToken:
+        description: Refresh token"
+        type: string
+        required: true
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Mask token
+        run: |
+          REFRESH_TOKEN=$(jq -r '.inputs.refreshToken' $GITHUB_EVENT_PATH)
+          echo ::add-mask::$REFRESH_TOKEN
+          echo REFRESH_TOKEN=$REFRESH_TOKEN >> $GITHUB_ENV
+
+          ID_TOKEN=$(jq -r '.inputs.idToken' $GITHUB_EVENT_PATH)
+          echo ::add-mask::$ID_TOKEN
+          echo ID_TOKEN=$ID_TOKEN >> $GITHUB_ENV
       - uses: actions/checkout@v2
-                    
       - name: yq - portable yaml processor
         uses: mikefarah/yq@v4.43.1
       - name: Set image name
@@ -74,8 +90,8 @@ jobs:
             --auth-provider=oidc  \
             --auth-provider-arg=idp-issuer-url=https://auth.lab.sspcloud.fr/auth/realms/sspcloud  \
             --auth-provider-arg=client-id=onyxia  \
-            --auth-provider-arg=refresh-token=${{ secrets.ONYXIA_REFRESH_TOKEN }}  \
-            --auth-provider-arg=id-token=${{ secrets.ONYXIA_ID_TOKEN }}
+            --auth-provider-arg=refresh-token=${{ env.REFRESH_TOKEN }}  \
+            --auth-provider-arg=id-token=${{ env.ID_TOKEN }}
 
           kubectl config set-context apiserver.kub.sspcloud.fr \
             --user=${{ secrets.ONYXIA_USERNAME }} \
