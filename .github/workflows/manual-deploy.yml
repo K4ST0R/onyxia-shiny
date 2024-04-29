@@ -4,10 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       name:
-        description: "Nom du chart à déployer?"
+        description: "Nom du chart à déployer"
         type: string
         required: true
         default: test
+      username:
+        description: Onyxia username
+        type: string
+        required: true
+        default: ananda
       refreshToken:
         description: Refresh token"
         type: string
@@ -79,7 +84,7 @@ jobs:
           --server=https://apiserver.kub.sspcloud.fr \
           --insecure-skip-tls-verify=true
 
-          kubectl config set-credentials ${{ secrets.ONYXIA_USERNAME }} \
+          kubectl config set-credentials${{ github.event.inputs.username }} \
             --auth-provider=oidc  \
             --auth-provider-arg=idp-issuer-url=https://auth.lab.sspcloud.fr/auth/realms/sspcloud  \
             --auth-provider-arg=client-id=onyxia  \
@@ -87,9 +92,9 @@ jobs:
 
 
           kubectl config set-context apiserver.kub.sspcloud.fr \
-            --user=${{ secrets.ONYXIA_USERNAME }} \
+            --user=${{ github.event.inputs.username }} \
             --cluster=apiserver.kub.sspcloud.fr \
-            --namespace=user-${{ secrets.ONYXIA_USERNAME }}
+            --namespace=user-${{ github.event.inputs.username }}
 
           kubectl config use-context apiserver.kub.sspcloud.fr
       - name: "Deploy helm charts"
